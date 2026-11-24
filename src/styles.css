@@ -173,9 +173,9 @@
 
 @layer components {
   .footer-link {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-ink);
     transition: opacity 160ms ease;
@@ -184,11 +184,18 @@
   .footer-link:hover {
     opacity: 0.65;
   }
+
+  @media (min-width: 768px) {
+    .footer-link {
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+    }
+  }
 }
 
 /* Wordmark sinks below the footer edge */
 .footer-wordmark {
-  margin-bottom: -6.5%;
+  margin-bottom: -2.5%;
 }
 /* Hero aurora: slow dark-orange smoke drifting in from the edges */
 .aurora {
@@ -526,4 +533,48 @@
     transition: none;
   }
 }
+}
+
+/* Special offers carousel: two rows filled column by column, scrolled
+   sideways. ~1.3 columns on phones, up to 5 on wide screens. */
+.offers-track {
+  grid-template-rows: repeat(2, auto);
+  grid-auto-flow: column;
+  grid-auto-columns: 72%;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.carousel-track {
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.carousel-track::-webkit-scrollbar,
+.offers-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .offers-track {
+    grid-auto-columns: calc((100% - 2 * 0.75rem) / 2.3);
+  }
+}
+
+@media (min-width: 768px) {
+  .offers-track {
+    grid-auto-columns: calc((100% - 3 * 1rem) / 3.3);
+  }
+}
+
+@media (min-width: 1024px) {
+  .offers-track {
+    grid-auto-columns: calc((100% - 3 * 1rem) / 4);
+  }
+}
+
+@media (min-width: 1280px) {
+  .offers-track {
+    grid-auto-columns: calc((100% - 4 * 1rem) / 5);
+  }
 }

@@ -1,3 +1,4 @@
+import { asset } from "@/lib/asset";
 import { ArrowFillButton } from "@/components/ui/arrow-fill-button";
 import { Aurora } from "./aurora";
 import { useSite } from "./site-provider";
@@ -22,9 +23,10 @@ export function Hero() {
             </p>
           </div>
 
+          {/* Desktop: button sits under the text, level with the car's bottom */}
           <ArrowFillButton
             size="lg"
-            className="mt-7 w-full sm:w-auto sm:self-center lg:mt-10 lg:self-start"
+            className="mt-10 hidden self-start lg:inline-flex"
             onClick={() => goBook({ service: "Плановое ТО" })}
           >
             Записаться на сервис
@@ -32,11 +34,19 @@ export function Hero() {
         </div>
 
         <img
-          src="/images/hero-gv70.png"
+          src={asset("images/hero-gv70.png")}
           alt="Зелёный Genesis"
           className="mx-auto block h-auto w-full max-w-2xl self-center lg:-ml-[4%] lg:w-[114%] lg:max-w-none"
           fetchPriority="high"
         />
+
+        {/* Mobile / tablet: compact button below the car */}
+        <ArrowFillButton
+          className="-mt-2 self-center justify-self-center lg:hidden"
+          onClick={() => goBook({ service: "Плановое ТО" })}
+        >
+          Записаться на сервис
+        </ArrowFillButton>
       </div>
     </section>
   );

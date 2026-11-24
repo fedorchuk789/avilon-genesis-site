@@ -1,3 +1,4 @@
+import { asset } from "@/lib/asset";
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { MapPin, Phone } from "lucide-react";
 import {
@@ -9,9 +10,7 @@ import {
   PHONE_BUREAU_TEL,
   PHONE_MAIN,
   PHONE_MAIN_TEL,
-  models,
   nav,
-  serviceNames,
   services,
 } from "@/data/site";
 import { ArrowFillButton } from "@/components/ui/arrow-fill-button";
@@ -20,19 +19,17 @@ import { useSite } from "./site-provider";
 type Draft = {
   name: string;
   phone: string;
-  date: string;
-  comment: string;
   consent: boolean;
 };
 
-const empty: Draft = { name: "", phone: "", date: "", comment: "", consent: false };
+const empty: Draft = { name: "", phone: "", consent: false };
 
 const bbox = `${MAP_LON - 0.012},${MAP_LAT - 0.008},${MAP_LON + 0.012},${MAP_LAT + 0.008}`;
 const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${MAP_LAT}%2C${MAP_LON}`;
 const yandexHref = `https://yandex.ru/maps/?ll=${MAP_LON}%2C${MAP_LAT}&z=16&pt=${MAP_LON},${MAP_LAT}&text=${encodeURIComponent("Авилон Genesis, Волгоградский проспект 41")}`;
 
 export function Visit() {
-  const { service, setService, model, setModel } = useSite();
+  const { service } = useSite();
   const [draft, setDraft] = useState<Draft>(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mailto, setMailto] = useState<string | null>(null);
@@ -52,18 +49,16 @@ export function Visit() {
     setErrors(next);
     if (Object.keys(next).length) return;
 
+    // The service comes from whichever offer / service tile the visitor clicked.
     const lines = [
       `Имя: ${draft.name.trim()}`,
       `Телефон: ${draft.phone.trim()}`,
-      `Модель: Genesis ${model}`,
-      `Услуга: ${service}`,
-      draft.date ? `Удобная дата: ${draft.date}` : "",
-      draft.comment.trim() ? `Комментарий: ${draft.comment.trim()}` : "",
-    ].filter(Boolean);
+      `Интересует: ${service}`,
+    ];
     const href = `mailto:${EMAIL}?subject=${encodeURIComponent("Запись на сервис Genesis")}&body=${encodeURIComponent(lines.join("\n"))}`;
     setMailto(href);
     try {
-      localStorage.setItem("avilon-genesis-request", JSON.stringify({ ...draft, model, service }));
+      localStorage.setItem("avilon-genesis-request", JSON.stringify({ ...draft, service }));
     } catch {
       /* ignore quota */
     }
@@ -71,117 +66,13 @@ export function Visit() {
 
   return (
     <section id="zapis" className="border-t border-line bg-bg text-fg">
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 md:py-24 lg:grid-cols-2">
-        <div>
-          <h2 className="font-display text-3xl leading-tight md:text-5xl">Оставить заявку</h2>
-
-          {summary ? (
-            <div className="panel mt-8 p-6">
-              <p className="font-display text-2xl">Заявка собрана</p>
-              <p className="mt-3 text-sm text-muted">
-                Genesis {model}, {service}. Откройте письмо и нажмите «Отправить» — или позвоните, если удобнее
-                голосом.
-              </p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <ArrowFillButton href={summary} className="w-full sm:w-auto">
-                  Открыть письмо
-                </ArrowFillButton>
-                <a
-                  href={`tel:${PHONE_BUREAU_TEL}`}
-                  className="btn-ghost rounded-full px-5 py-3 text-center text-sm font-semibold"
-                >
-                  Позвонить в сервис-бюро
-                </a>
-              </div>
-              <button
-                type="button"
-                className="mt-4 text-sm text-muted underline"
-                onClick={() => setMailto(null)}
-              >
-                Изменить заявку
-              </button>
-            </div>
-          ) : (
-            <form className="mt-8 grid gap-4" onSubmit={onSubmit} noValidate>
-              <Field label="Имя" error={errors.name}>
-                <input
-                  className="field"
-                  name="name"
-                  autoComplete="name"
-                  value={draft.name}
-                  onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-                  placeholder="Иван"
-                />
-              </Field>
-              <Field label="Телефон" error={errors.phone}>
-                <input
-                  className="field"
-                  name="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  inputMode="tel"
-                  value={draft.phone}
-                  onChange={(e) => setDraft({ ...draft, phone: e.target.value })}
-                  placeholder="+7 900 000-00-00"
-                />
-              </Field>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Модель">
-                  <select className="field" value={model} onChange={(e) => setModel(e.target.value)}>
-                    {models.map((item) => (
-                      <option key={item}>{item}</option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Услуга">
-                  <select className="field" value={service} onChange={(e) => setService(e.target.value)}>
-                    {serviceNames.map((item) => (
-                      <option key={item}>{item}</option>
-                    ))}
-                  </select>
-                </Field>
-              </div>
-              <Field label="Удобная дата">
-                <input
-                  className="field"
-                  type="date"
-                  value={draft.date}
-                  onChange={(e) => setDraft({ ...draft, date: e.target.value })}
-                />
-              </Field>
-              <Field label="Что случилось">
-                <textarea
-                  className="field min-h-28 resize-y"
-                  value={draft.comment}
-                  onChange={(e) => setDraft({ ...draft, comment: e.target.value })}
-                  placeholder="Пробег, ошибка на панели, нужен кузов или просто ТО"
-                />
-              </Field>
-              <label className="flex items-start gap-3 text-sm text-muted">
-                <input
-                  type="checkbox"
-                  className="mt-1 size-4 accent-copper"
-                  checked={draft.consent}
-                  onChange={(e) => setDraft({ ...draft, consent: e.target.checked })}
-                />
-                <span>
-                  Соглашаюсь на обработку имени и телефона, чтобы АВИЛОН связался по этой заявке.
-                  {errors.consent ? <span className="mt-1 block text-copper">{errors.consent}</span> : null}
-                </span>
-              </label>
-              <ArrowFillButton type="submit" full>
-                Оставить заявку
-              </ArrowFillButton>
-            </form>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <div className="panel overflow-hidden">
+      <div className="mx-auto max-w-7xl px-5 py-16 md:py-24">
+        <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
+          <div className="panel overflow-hidden lg:min-h-[24rem]">
             <iframe
               title="Карта: АВИЛОН Genesis, Волгоградский проспект, 41"
               src={mapSrc}
-              className="map-frame h-72 w-full md:h-96"
+              className="map-frame h-72 w-full md:h-96 lg:h-full"
               loading="lazy"
             />
           </div>
@@ -230,6 +121,78 @@ export function Visit() {
             </a>
           </div>
         </div>
+
+        <div className="mt-14 max-w-2xl md:mt-20">
+          <h2 className="font-display text-3xl leading-tight md:text-5xl">Оставить заявку</h2>
+
+          {summary ? (
+            <div className="panel mt-8 p-6">
+              <p className="font-display text-2xl">Заявка собрана</p>
+              <p className="mt-3 text-sm text-muted">
+                {service}. Откройте письмо и нажмите «Отправить» — или позвоните, если удобнее
+                голосом.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <ArrowFillButton href={summary} className="w-full sm:w-auto">
+                  Открыть письмо
+                </ArrowFillButton>
+                <a
+                  href={`tel:${PHONE_BUREAU_TEL}`}
+                  className="btn-ghost rounded-full px-5 py-3 text-center text-sm font-semibold"
+                >
+                  Позвонить в сервис-бюро
+                </a>
+              </div>
+              <button
+                type="button"
+                className="mt-4 text-sm text-muted underline"
+                onClick={() => setMailto(null)}
+              >
+                Изменить заявку
+              </button>
+            </div>
+          ) : (
+            <form className="mt-8 grid gap-4" onSubmit={onSubmit} noValidate>
+              <Field label="Имя" error={errors.name}>
+                <input
+                  className="field"
+                  name="name"
+                  autoComplete="name"
+                  value={draft.name}
+                  onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+                  placeholder="Иван"
+                />
+              </Field>
+              <Field label="Телефон" error={errors.phone}>
+                <input
+                  className="field"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  value={draft.phone}
+                  onChange={(e) => setDraft({ ...draft, phone: e.target.value })}
+                  placeholder="+7 900 000-00-00"
+                />
+              </Field>
+              <label className="flex items-start gap-3 text-sm text-muted">
+                <input
+                  type="checkbox"
+                  className="mt-1 size-4 accent-copper"
+                  checked={draft.consent}
+                  onChange={(e) => setDraft({ ...draft, consent: e.target.checked })}
+                />
+                <span>
+                  Соглашаюсь на обработку имени и телефона, чтобы АВИЛОН связался по этой заявке.
+                  {errors.consent ? <span className="mt-1 block text-copper">{errors.consent}</span> : null}
+                </span>
+              </label>
+              <ArrowFillButton type="submit" full>
+                Оставить заявку
+              </ArrowFillButton>
+            </form>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -251,17 +214,16 @@ export function Footer() {
   return (
     <>
       <footer className="overflow-hidden bg-copper text-ink">
-        <div className="mx-auto max-w-7xl px-5 pt-14 md:pt-20">
-          <div className="grid gap-10 md:grid-cols-[1.3fr_1fr_1fr_1.2fr] md:gap-8">
-            <div>
-              <p className="font-display text-3xl leading-tight md:text-4xl">
-                Запишитесь
-                <br />
+        <div className="mx-auto max-w-7xl px-5 pt-10 md:pt-20">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-[1.3fr_1fr_1fr_1.2fr] md:gap-8">
+            <div className="col-span-2 md:col-span-1">
+              <p className="font-display text-[1.3rem] leading-tight whitespace-nowrap min-[400px]:text-2xl md:text-4xl md:whitespace-normal">
+                Запишитесь <br className="hidden md:inline" />
                 на сервис
               </p>
               <button
                 type="button"
-                className="mt-6 rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-ivory transition-transform hover:-translate-y-0.5"
+                className="mt-4 rounded-full bg-ink px-6 py-3 text-sm md:mt-6 md:px-7 md:py-3.5 font-semibold text-ivory transition-transform hover:-translate-y-0.5"
                 onClick={() => goBook()}
               >
                 Оставить заявку
@@ -284,7 +246,7 @@ export function Footer() {
               ))}
             </FooterCol>
 
-            <FooterCol title="Контакты">
+            <FooterCol title="Контакты" className="col-span-2 md:col-span-1">
               <a href={`tel:${PHONE_MAIN_TEL}`} className="footer-link">
                 {PHONE_MAIN}
               </a>
@@ -299,16 +261,16 @@ export function Footer() {
             </FooterCol>
           </div>
 
-          <p className="mt-12 max-w-3xl text-xs leading-relaxed text-ink/70 md:mt-16">
+          <p className="mt-8 max-w-3xl text-[0.7rem] leading-relaxed text-ink/70 md:mt-12 md:text-xs">
             © 2026 Официальный дилер Genesis в Москве. АО «Авилон АГ», ОГРН 1027700000151, ИНН 7705133757.
             Информация о сервисе справочная и не является публичной офертой (ст. 437 ГК РФ). Цены и состав акций
             подтверждает мастер-консультант.
           </p>
         </div>
 
-        <div className="mt-10 px-3 md:mt-14 md:px-5" aria-hidden="true">
+        <div className="mt-5 px-3 md:mt-6 md:px-5" aria-hidden="true">
           <img
-            src="/images/avilon-logo.webp"
+            src={asset("images/avilon-logo.webp")}
             alt=""
             className="footer-wordmark mx-auto block w-full max-w-[110rem] brightness-0"
           />
@@ -329,11 +291,11 @@ export function Footer() {
   );
 }
 
-function FooterCol({ title, children }: { title: string; children: ReactNode }) {
+function FooterCol({ title, children, className = "" }: { title: string; children: ReactNode; className?: string }) {
   return (
-    <div>
-      <p className="text-sm font-semibold tracking-[0.18em] uppercase">{title}</p>
-      <div className="mt-5 flex flex-col items-start gap-3">{children}</div>
+    <div className={className}>
+      <p className="text-xs font-semibold tracking-[0.18em] uppercase md:text-sm">{title}</p>
+      <div className="mt-3 flex flex-col items-start gap-2 md:mt-5 md:gap-3">{children}</div>
     </div>
   );
 }

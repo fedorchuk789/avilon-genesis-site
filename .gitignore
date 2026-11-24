@@ -1,0 +1,15 @@
+node_modules/
+.node_modules.lock
+.vercel/
+.tanstack/
+.output/
+dist/
+*.zip
+*.log
+
+# Builder workspace leftovers (not part of the site)
+screenshots/
+attachments/
+artifacts/
+.grok/skills/
+.grok/references/

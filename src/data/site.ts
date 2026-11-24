@@ -1,3 +1,4 @@
+import { asset } from "@/lib/asset";
 export const PHONE_MAIN = "+7 (495) 730-44-22";
 export const PHONE_MAIN_TEL = "+74957304422";
 export const PHONE_BUREAU = "+7 (495) 186-12-95";
@@ -21,7 +22,7 @@ export const nav = [
 export const offers = [
   {
     title: "Смена сезона в АВИЛОН",
-    image: "/images/offer-smena-sezona.jpg",
+    image: asset("images/offer-smena-sezona.jpg"),
     service: "Шиномонтаж",
   },
   {

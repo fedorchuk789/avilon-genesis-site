@@ -1,8 +1,9 @@
+import { asset } from "@/lib/asset";
 import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 import { faqs } from "@/data/site";
 
-const reviewImages = [1, 2, 3, 4, 5, 6].map((n) => `/images/review-${n}.png`);
+const reviewImages = [1, 2, 3, 4, 5, 6].map((n) => asset(`images/review-${n}.png`));
 
 export function Reviews() {
   return (
