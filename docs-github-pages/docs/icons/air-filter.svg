@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="frameTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b6b70"/>
+      <stop offset="1" stop-color="#3b3b40"/>
+    </linearGradient>
+    <linearGradient id="frameSide" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2a2a2e"/>
+      <stop offset="1" stop-color="#47474c"/>
+    </linearGradient>
+    <linearGradient id="pleatA" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffcf8a"/>
+      <stop offset="1" stop-color="#f29a45"/>
+    </linearGradient>
+    <linearGradient id="pleatB" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e07f2c"/>
+      <stop offset="1" stop-color="#b85d1a"/>
+    </linearGradient>
+    <radialGradient id="shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="62" cy="104" rx="46" ry="7" fill="url(#shadow)"/>
+  <!-- top face of the frame -->
+  <polygon points="14,46 30,30 108,30 92,46" fill="url(#frameTop)"/>
+  <!-- right side -->
+  <polygon points="92,46 108,30 108,84 92,100" fill="url(#frameSide)"/>
+  <!-- front frame -->
+  <rect x="14" y="46" width="78" height="54" rx="3" fill="#2f2f34"/>
+  <!-- pleats -->
+  <g>
+    <rect x="20" y="52" width="6.6" height="42" fill="url(#pleatA)"/>
+    <rect x="26.6" y="52" width="6.6" height="42" fill="url(#pleatB)"/>
+    <rect x="33.2" y="52" width="6.6" height="42" fill="url(#pleatA)"/>
+    <rect x="39.8" y="52" width="6.6" height="42" fill="url(#pleatB)"/>
+    <rect x="46.4" y="52" width="6.6" height="42" fill="url(#pleatA)"/>
+    <rect x="53" y="52" width="6.6" height="42" fill="url(#pleatB)"/>
+    <rect x="59.6" y="52" width="6.6" height="42" fill="url(#pleatA)"/>
+    <rect x="66.2" y="52" width="6.6" height="42" fill="url(#pleatB)"/>
+    <rect x="72.8" y="52" width="6.6" height="42" fill="url(#pleatA)"/>
+    <rect x="79.4" y="52" width="6.6" height="42" fill="url(#pleatB)"/>
+  </g>
+  <!-- pleat tops visible on top face -->
+  <g fill="#f7b36a" opacity="0.9">
+    <polygon points="22,44 31,35 34,35 25,44"/>
+    <polygon points="35,44 44,35 47,35 38,44"/>
+    <polygon points="48,44 57,35 60,35 51,44"/>
+    <polygon points="61,44 70,35 73,35 64,44"/>
+    <polygon points="74,44 83,35 86,35 77,44"/>
+  </g>
+  <!-- highlight -->
+  <rect x="14" y="46" width="78" height="3" rx="1.5" fill="#fff" opacity="0.18"/>
+</svg>
