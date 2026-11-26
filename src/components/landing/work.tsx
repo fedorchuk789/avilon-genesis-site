@@ -1,14 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  BadgeCheck,
-  ChevronLeft,
-  ChevronRight,
-  Coffee,
-  Headset,
-  Percent,
-  ScanSearch,
-  Wrench,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { asset } from "@/lib/asset";
 import JournalSpreadCarousel, { type JournalSpread } from "@/components/ui/journal-spread-carousel";
 import { advantages, offers, services } from "@/data/site";
@@ -214,8 +205,15 @@ export function Gallery() {
     </section>
   );
 }
-/** One line icon per advantage, in the same order as `advantages` in site.ts. */
-const advantageIcons = [BadgeCheck, ScanSearch, Wrench, Coffee, Percent, Headset];
+/** One 3D icon per advantage, in the same order as `advantages` in site.ts. */
+const advantageIcons = [
+  `${FLUENT}/Shield/3D/shield_3d.png`,
+  `${FLUENT}/Magnifying%20glass%20tilted%20right/3D/magnifying_glass_tilted_right_3d.png`,
+  `${FLUENT}/Gear/3D/gear_3d.png`,
+  `${FLUENT}/Couch%20and%20lamp/3D/couch_and_lamp_3d.png`,
+  `${FLUENT}/Wrapped%20gift/3D/wrapped_gift_3d.png`,
+  `${FLUENT}/Spiral%20calendar/3D/spiral_calendar_3d.png`,
+];
 
 export function Advantages() {
   return (
@@ -227,14 +225,13 @@ export function Advantages() {
         <div className="mt-8 md:mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {advantages.map((item, i) => (
             <article key={item.title} className="panel panel-hover p-6">
-              {(() => {
-                const Icon = advantageIcons[i % advantageIcons.length];
-                return (
-                  <span className="icon-orb">
-                    <Icon className="size-6" strokeWidth={1.6} aria-hidden="true" />
-                  </span>
-                );
-              })()}
+              <img
+                src={advantageIcons[i % advantageIcons.length]}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                className="size-14 object-contain drop-shadow-[0_8px_14px_rgba(0,0,0,0.45)] md:size-16"
+              />
               <h3 className="mt-5 font-display text-xl leading-snug">{item.title}</h3>
               <p className="mt-3 text-sm text-muted">{item.text}</p>
             </article>
