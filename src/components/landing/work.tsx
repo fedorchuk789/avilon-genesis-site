@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { asset } from "@/lib/asset";
+import JournalSpreadCarousel, { type JournalSpread } from "@/components/ui/journal-spread-carousel";
 import { advantages, offers, services } from "@/data/site";
 import { ArrowFillButton } from "@/components/ui/arrow-fill-button";
 import { useSite } from "./site-provider";
@@ -168,48 +169,38 @@ export function Services() {
   );
 }
 
-const photos = [
-  { src: asset("images/service-1.webp"), alt: "Балансировка колеса в сервисе АВИЛОН" },
-  { src: asset("images/service-3.webp"), alt: "Клиентская зона сервиса" },
-  { src: asset("images/service-4.webp"), alt: "Рабочий пост с подъёмником" },
-  { src: asset("images/service-5.webp"), alt: "Цех сервиса Genesis" },
-  { src: asset("images/service-6.webp"), alt: "Вывеска Genesis в цеху" },
+// Each spread is one landscape photo across both pages; the two portrait
+// shots ride along as taped prints so nothing gets cropped to a sliver.
+const photoSpreads: JournalSpread[] = [
+  { label: "Genesis GV80 на подъёмнике", image: asset("images/service-7.webp"), imagePosition: "50% 45%" },
+  {
+    label: "Шиномонтаж и балансировка",
+    image: asset("images/service-1.webp"),
+    prints: [{ src: asset("images/service-4.webp"), x: 70, y: 9, w: 20, rotate: 5, tape: true }],
+  },
+  { label: "Genesis G90 в цехе", image: asset("images/service-8.webp") },
+  { label: "Клиентская зона", image: asset("images/service-3.webp") },
+  {
+    label: "Genesis GV80 на посту",
+    image: asset("images/service-9.webp"),
+    prints: [{ src: asset("images/service-5.webp"), x: 6, y: 10, w: 20, rotate: -5, tape: true }],
+  },
+  { label: "Подкапотное пространство Genesis", image: asset("images/service-10.webp") },
+  { label: "Вывеска Genesis в цехе", image: asset("images/service-6.webp") },
 ];
 
 export function Gallery() {
-  const { trackRef, edges, updateEdges, scrollByPage } = useCarousel();
   return (
     <section id="foto" className="border-t border-line">
       <div className="mx-auto max-w-7xl px-5 py-16 md:py-24">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="font-display text-3xl leading-tight md:text-5xl">Фотографии сервиса</h2>
-          <div className="hidden shrink-0 gap-2 sm:flex">
-            <CarouselArrow dir={-1} disabled={edges.start} onClick={() => scrollByPage(-1)} />
-            <CarouselArrow dir={1} disabled={edges.end} onClick={() => scrollByPage(1)} />
-          </div>
-        </div>
-        <div
-          ref={trackRef}
-          onScroll={updateEdges}
-          className="carousel-track -mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-2 md:mt-10 md:gap-4"
-        >
-          {photos.map((photo) => (
-            <figure
-              key={photo.src}
-              className="group relative h-64 shrink-0 snap-start overflow-hidden rounded-3xl bg-surface sm:h-80 lg:h-[26rem]"
-            >
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                loading="lazy"
-                className="block h-full w-auto max-w-[85vw] object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-              />
-              <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-5 pt-10 pb-4 text-sm text-ivory/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                {photo.alt}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
+        <h2 className="font-display text-3xl leading-tight md:text-5xl">Фотографии сервиса</h2>
+        <JournalSpreadCarousel
+          spreads={photoSpreads}
+          label="Фотографии сервиса"
+          className="mt-8 md:mt-10"
+          height="clamp(380px, 68vh, 680px)"
+          initialIndex={1}
+        />
       </div>
     </section>
   );
