@@ -1,27 +1,68 @@
-import { asset } from "@/lib/asset";
 import { useState } from "react";
-import { Minus, Plus } from "lucide-react";
-import { faqs } from "@/data/site";
+import { Minus, Plus, Star } from "lucide-react";
+import { faqs, reviews } from "@/data/site";
+import { Marquee } from "@/components/ui/marquee";
+import { CardContent, GlassFilter, LiquidCard } from "@/components/ui/liquid-glass-card";
 
-const reviewImages = [1, 2, 3, 4, 5, 6].map((n) => asset(`images/review-${n}.png`));
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+}
 
 export function Reviews() {
   return (
-    <section id="otzyvy" className="bg-ivory text-ink">
-      <div className="mx-auto max-w-7xl px-5 py-16 md:py-24">
-        <h2 className="max-w-xl font-display text-3xl leading-tight md:text-5xl">Отзывы клиентов</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 md:mt-10">
-          {reviewImages.map((src, i) => (
-            <img
-              key={src}
-              src={src}
-              alt={`Отзыв клиента ${i + 1}`}
-              loading="lazy"
-              className="block h-auto w-full rounded-2xl bg-paper shadow-sm ring-1 ring-ink/10"
-            />
-          ))}
+    <section id="otzyvy" className="relative overflow-hidden bg-ivory text-ink">
+      {/* Warm blobs behind the strip so the glass cards have something to refract */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-1/2 h-72 -translate-y-1/4">
+        <div className="absolute left-[8%] h-64 w-64 rounded-full bg-copper/35 blur-3xl" />
+        <div className="absolute left-[45%] top-10 h-56 w-72 rounded-full bg-copper-deep/25 blur-3xl" />
+        <div className="absolute right-[6%] h-60 w-60 rounded-full bg-[#f0b48a]/45 blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-5 pt-16 md:pt-24">
+        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+          <h2 className="max-w-xl font-display text-3xl leading-tight md:text-5xl">Отзывы клиентов</h2>
+          <p className="flex items-center gap-2 text-sm text-ink-soft">
+            <Star className="size-4 fill-copper text-copper" aria-hidden="true" />
+            Отзывы с Яндекс Карт
+          </p>
         </div>
       </div>
+
+      <GlassFilter />
+      <Marquee
+        pauseOnHover
+        speed="normal"
+        className="reviews-marquee relative mt-8 py-4 md:mt-10"
+        aria-label="Отзывы клиентов"
+      >
+        {reviews.map((r) => (
+          <LiquidCard key={r.name} className="h-full w-[18rem] rounded-3xl sm:w-80">
+            <CardContent className="flex h-full flex-col">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink font-display text-xs text-ivory">
+                  {initials(r.name)}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate font-semibold">{r.name}</p>
+                  <p className="text-sm text-ink-soft">{r.date}</p>
+                </div>
+              </div>
+              <p className="mb-4 flex-1 text-sm leading-relaxed">{r.text}</p>
+              <div className="flex gap-1" aria-label="Оценка 5 из 5">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} className="size-4 fill-copper text-copper" aria-hidden="true" />
+                ))}
+              </div>
+            </CardContent>
+          </LiquidCard>
+        ))}
+      </Marquee>
+      <div className="h-16 md:h-24" aria-hidden="true" />
     </section>
   );
 }
