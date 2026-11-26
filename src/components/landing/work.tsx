@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  BadgeCheck,
+  ChevronLeft,
+  ChevronRight,
+  Coffee,
+  Headset,
+  Percent,
+  ScanSearch,
+  Wrench,
+} from "lucide-react";
 import { asset } from "@/lib/asset";
 import JournalSpreadCarousel, { type JournalSpread } from "@/components/ui/journal-spread-carousel";
 import { advantages, offers, services } from "@/data/site";
@@ -205,6 +214,9 @@ export function Gallery() {
     </section>
   );
 }
+/** One line icon per advantage, in the same order as `advantages` in site.ts. */
+const advantageIcons = [BadgeCheck, ScanSearch, Wrench, Coffee, Percent, Headset];
+
 export function Advantages() {
   return (
     <section id="pochemu" className="border-t border-line">
@@ -215,7 +227,14 @@ export function Advantages() {
         <div className="mt-8 md:mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {advantages.map((item, i) => (
             <article key={item.title} className="panel panel-hover p-6">
-              <span className="icon-orb text-sm font-semibold">{String(i + 1).padStart(2, "0")}</span>
+              {(() => {
+                const Icon = advantageIcons[i % advantageIcons.length];
+                return (
+                  <span className="icon-orb">
+                    <Icon className="size-6" strokeWidth={1.6} aria-hidden="true" />
+                  </span>
+                );
+              })()}
               <h3 className="mt-5 font-display text-xl leading-snug">{item.title}</h3>
               <p className="mt-3 text-sm text-muted">{item.text}</p>
             </article>
