@@ -193,7 +193,7 @@ export function Gallery() {
   return (
     <section id="foto" className="border-t border-line">
       <div className="mx-auto max-w-7xl px-5 py-16 md:py-24">
-        <h2 className="font-display text-3xl leading-tight md:text-5xl">Фотографии сервиса</h2>
+        <h2 className="text-center font-display text-3xl leading-tight md:text-5xl">Фотографии сервиса</h2>
         <JournalSpreadCarousel
           spreads={photoSpreads}
           label="Фотографии сервиса"

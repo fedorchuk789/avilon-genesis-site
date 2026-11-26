@@ -26,10 +26,15 @@ export function Reviews() {
       <div className="relative mx-auto max-w-7xl px-5 pt-16 md:pt-24">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <h2 className="max-w-xl font-display text-3xl leading-tight md:text-5xl">Отзывы клиентов</h2>
-          <p className="flex items-center gap-2 text-sm text-ink-soft">
+          <a
+            href="https://yandex.ru/maps/org/avilon_genesis/21736267381/reviews/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm text-ink-soft underline decoration-copper/50 underline-offset-4 transition-colors hover:text-copper-deep hover:decoration-copper"
+          >
             <Star className="size-4 fill-copper text-copper" aria-hidden="true" />
             Отзывы с Яндекс Карт
-          </p>
+          </a>
         </div>
       </div>
 
